@@ -1,0 +1,60 @@
+﻿<!--[if IE 8]><html class="no-js ie8 oldie" lang="en"><![endif]-->
+<!--[if IE 9]><html class="no-js ie9" lang="en"><![endif]-->
+<!--[if gt IE 9]><!-->
+<html class="no-js" lang="en">
+<!--<![endif]-->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <meta name="robots" content="index, follow">
+    <meta name="keywords" content="tags for website">
+    <meta name="description" content="description">
+    <link rel="canonical" href="https://www.projectname~.az">
+    <link rel="shortcut icon" href="~/favicon.ico">
+    <link rel="apple-touch-icon" href="/apple-icon.png">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+    <link href="~/Main/assets/css/owl.carousel.css" rel="stylesheet" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <title> MYPLAN.AZ </title>
+    <!-- injector:css -->
+    <link rel="stylesheet" href="~/Main/assets/css/style.css">
+    <link href="~/Main/assets/css/toastr.css" rel="stylesheet" />
+    <link rel="stylesheet" href="~/Main/assets/css/owl.carousel.min.css">
+    <link rel="stylesheet" href="~/Main/assets/css/owl.theme.default.min.css">
+    <!-- endinjector -->
+</head>
+<body>
+    @if (User.Identity.IsAuthenticated)
+    {
+        <a class="for-desktop  btn-btn-danger m-4" href="@Url.Action("LogOut","Account")">
+            Logout
+        </a>
+    }
+    <a class="for-desktop  btn-btn-danger m-4" href="@Url.Action("List","Account")">
+        Go to List
+    </a>
+    @RenderBody()
+    <!-- start-FOOTER -->
+    <!-- ./end-FOOTER -->
+    <!-- injector:js -->
+    <script src="~/Main/assets/js/main.js"></script>
+    <script src="~/Main/assets/js/script.js"></script>
+    <script src="~/Main/assets/js/nice-select/jquery.nice-select.js"></script>
+    <!-- Js for chat -->
+    @if (User.Identity.IsAuthenticated)
+    {
+<script src="~/SignalR/dist/browser/signalr.js"></script>
+                <script src="~/SignalR/dist/browser/chat.js"></script>
+                                <script src="~/SignalR/dist/browser/chatManager.js"></script>
+                                                @RenderSection("OnlineOfflineChatJs", false)}
+    <!-- Js for chat -->
+    <script src="~/Main/assets/js/owl.carousel.min.js"></script>
+
+</body>
+</html>
+

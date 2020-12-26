@@ -1,0 +1,157 @@
+﻿@using ChatSignalR.Models;
+@using ChatSignalR.Extensions;
+@model ChatVm
+<section class="my-5 px-3-formobile black-msg">
+    <div class="d-flex-custom container p-0 login_div">
+        <div class="col-12 col-md-5 messages-div p-0">
+            <div class="profile-menu-header p-0">
+                <div class="d-flex justify-content-between type-msg-div">
+                    <span class="extra-bold white mt-2">MESAJLARIM</span>
+                    @*<button type="submit" class="btn btn-theme new-msg-btn"> <img class="mr-2" src="~/Main/assets/icons/plus-icon.svg" alt="plus-icon"><span class="white extra-bold">Yeni mesaj yaz</span></button>*@
+                </div>
+                <div class="justify-content-between type-msg-div type-msg-settings">
+                    <div class="d-flex align-items-center">
+                        <div class="checkbox">
+                            <label class="select-all-txt medium">
+                                <input class="selectall" type="checkbox"><span class="mr-2 checkbox-material checkbox-msg"><span class="check"></span></span> Hamısını seç
+                            </label>
+                        </div>
+                    </div>
+                    <div class="dropdown dropdown-profile d-flex-header settings-div">
+                        <button type="button" class="settings1" data-toggle="dropdown">
+                            <img src="~/Main/assets/icons/settings-ag.svg" alt="settings-icon">
+                            <img class="settings1-arrow ml-2" src="~/Main/assets/icons/arrow-header.png" alt="arrow-down-icon">
+                        </button>
+                        <div class="profile-menu-header dropdown-menu setinggs-dropdown p-0">
+                            <ul class="p-0 mb-0">
+                                <li class="lang-item"><img class="mr-2" src="~/Main/assets/icons/archive-icon.svg" alt="archive-icon"> <span class="black demi-bold mt-2">Arxivlə</span></li>
+                                <li id="deleteConversation" class="lang-item"><img class="mr-2" src="~/Main/assets/icons/delete-icon.svg" alt="delete-icon"> <span class="delete-txt bold mt-2">Sil</span></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <ul class="p-0 mb-0 demi-bold text-xs participants users-msg-prev">
+                    @{
+                        var counter = 0;
+                    }
+                    @foreach (Participant participant in Model.Participants)
+                    {
+                        <li class="msg-item @(Model.ProfileId!=null?(participant.AppUserId == Model.ProfileId?"active":""):(counter==0?"active":""))" data-id="@participant.Conversation.SecurityStamp">
+                            <div class="d-flex">
+                                <div class="d-flex align-items-center img-user-div">
+                                    <div class="checkbox mr-2">
+                                        <label class="select-all-txt medium">
+                                            <input class="individual" type="checkbox"><span class="checkbox-material checkbox-msg"><span class="check"></span></span>
+                                        </label>
+                                    </div>
+                                    <div class="circular-img mr-3">
+                                        <img src="~/account.png" alt="user-img">
+                                    </div>
+                                </div>
+                                <div class="img-text w-100">
+                                    <div class="d-flex participant-info justify-content-between white">
+                                        <p class="notification-text extra-bold mb-0 sender-name">@participant.AppUser.Name @participant.AppUser.Surname</p>
+                                        <p class="notification-date medium mb-0">@participant.Conversation.UpdatedDate</p>
+                                    </div>
+                                    <p class="mb-0 medium last-message">
+                                        @Model.LastMessages.FirstOrDefault(c => c.Key == participant.ConversationId).Value
+                                    </p>
+                                </div>
+                            </div>
+                        </li>
+                        counter++;
+                    }
+
+                </ul>
+            </div>
+        </div>
+        <div class="col-12 col-md-7 p-0 old-message">
+            <div class="d-flex justify-content-between msg-div">
+                <div class="d-flex align-items-center">
+                    <img class="back-to-msgs pr-2 mt-1 for-mobile" src="~/Main/assets/icons/arrow-left.png" alt="arrow">
+                    <span class="extra-bold text-xs mr-3 participant-name"></span>
+                    <span class="light text-xs"></span>
+                </div>
+                <div class="dropdown dropdown-profile d-flex-header settings-div-in-msg" style="display: none;">
+                    <button type="button" class="settings2" data-toggle="dropdown">
+                        <img src="~/Main/assets/icons/settings-icon.svg" alt="settings-icon">
+                        <img class="filter-arrow-down ml-2" src="~/Main/assets/icons/arrow-down.png" alt="arrow-down-icon">
+                    </button>
+                    <div class="profile-menu-header dropdown-menu setinggs-dropdown p-0">
+                        <ul class="p-0 mb-0 text-xs">
+                            <li class="lang-item"><img class="mr-2" src="~/Main/assets/icons/archive-icon.svg" alt="archive-icon"> <span class="black demi-bold mt-2">Arxivlə</span></li>
+                            <li class="lang-item"><img class="mr-2" src="~/Main/assets/icons/block-icon.svg" alt="block-icon"> <span class="black demi-bold mt-2">İstifadəçini əngəllə</span></li>
+                            <li class="lang-item"><img class="mr-2" src="~/Main/assets/icons/delete-icon.svg" alt="delete-icon"> <span class="delete-txt bold mt-2">Sil</span></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="chat-wrapper" id="chats">
+                @{
+                    counter = 0;
+                }
+                @foreach (var participant in Model.Participants)
+                {
+                    <div style="overflow-y:auto;" data-id="@participant.Conversation.SecurityStamp" class="chat @(Model.ProfileId!=null?(participant.AppUserId == Model.ProfileId?"active":""):(counter==0?"active":"")) mt-3">
+                    </div>
+                    counter++;
+                }
+            </div>
+            <form action="/" id="send-message" class="mb-0" method="post">
+                <div class="msg-type-input justify-content-between light text-xs">
+                    <div class=" mesaj-yaz">
+                        <input id="message" class="type-msg" type="text" placeholder="Cavab yaz">
+                        <img id="btn-send-file" class="file-icon ml-3" src="~/Main/assets/icons/file-icon.svg" alt="file-icon">
+                        <img id="btn-send-message" class="send-icon ml-3" style="display:none;cursor: pointer;" src="~/Main/assets/icons/send-msg-icon.svg" alt="file-icon">
+                        @*<img id="mic" class="microfon-icon ml-3" src="~/Main/assets/icons/microfon-icon.svg" alt="microfon-icon">*@
+                    </div>
+                </div>
+            </form>
+
+        </div>
+        <div class="col-12 col-md-7 p-0 new-message">
+            <div class="d-flex justify-content-between new-msg-div">
+                <div class="d-flex align-items-center">
+                    <img class="back-to-msgs pr-2 mt-1 for-mobile" src="~/Main/assets/icons/arrow-left.png" alt="arrow">
+                    <span class="extra-bold text-xs">Yeni mesaj</span>
+                </div>
+            </div>
+            <div class="chat-wrapper">
+                <div class="new-chat-div">
+                    <div class="d-flex align-items-center mb-4 mr-3">
+                        <div class="whome mr-3">
+                            <span class="extra-bold text-xs">Kimə</span>
+                        </div>
+                        <input class="new-msg-topic light" type="text" placeholder="İstifadəçi adı">
+                    </div>
+                    <div class="d-flex align-items-center mb-4 pr-3">
+                        <div class="whome mr-3">
+                            <span class="extra-bold text-xs">Mesaj</span>
+                        </div>
+                        <textarea class="form-control-custom medium new-whole-msg"></textarea>
+                    </div>
+                    <div class="d-flex justify-content-end submit-msg-div">
+                        <button type="submit" class="btn delete-msg-btn"> <span class="delete-txt extra-bold">Təmizlə</span></button>
+                        <button type="submit" class="btn btn-theme new-msg-btn"> <span class="white extra-bold">Göndər</span></button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<br>
+
+@section OnlineOfflineChatJs { 
+    <script>
+        $(document).ready(async function () {
+            let interval = setInterval(async () => {
+                if (connection.connectionStarted) {
+                    connection.invoke("Online");
+                    window.addEventListener("beforeunload", () => { connection.invoke("Offline"); });
+                    clearInterval(interval);
+                }
+            }, 10);
+        });
+    </script>
+}

@@ -1,0 +1,28 @@
+﻿@using ChatSignalR.Models;
+@using ChatSignalR.Extensions;
+@model List<AppUser>
+<table class="table">
+    <thead class="thead-dark">
+        <tr>
+            <th scope="col">Ad</th>
+            <th scope="col">Soayd</th>
+            <th scope="col">Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in Model)
+        {
+            if (User.GetUserId() != user.Id)
+            {
+                <tr>
+                    <td>@user.Name</td>
+                    <td>@user.Surname</td>
+                    <td>
+                        <a href="@Url.Action("CreateConversation","Chat",new { profileId = user.Id })">Mesaj göndər</a>
+                    </td>
+                </tr>
+            }
+
+        }
+    </tbody>
+</table>
